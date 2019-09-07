@@ -1,18 +1,18 @@
 'use strict';
+const logTypes = ['log', 'warn', 'error', 'custom'];
 const { sendMessage } = require('./awsSQS');
 
 module.exports.createLogEntry = async event => {
-  const logTypes = ['log', 'warn', 'error', 'custom'];
   try {
     if (event.body === null) {
       return getReturnObject(false);
     }
     const { origin, type, message } = JSON.parse(event.body);
     if (origin === undefined || type === undefined || message === undefined
-        || origin === "" || type === "" || message === "" || !logTypes.includes(type)) {
+        || origin === '' || type === '' || message === '' || !logTypes.includes(type)) {
       return getReturnObject(false);
     }
-    await sendMessage();
+    await sendMessage(event.body);
     return getReturnObject(true);
   } catch (error) {
     return getReturnObject(false);
