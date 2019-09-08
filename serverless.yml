@@ -28,15 +28,17 @@ provider:
 #  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:PutObject"
-#      Resource:
+      Resource:
+        - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge"
 #        Fn::Join:
 #          - ""
 #          - - "arn:aws:s3:::"
@@ -58,11 +60,13 @@ provider:
 
 functions:
   createLogEntry:
-    handler: functions.createLogEntry
+    handler: logsService.createLogEntry
     events:
       - http:
           path: create_log_entry
           method: post
+  saveLog:
+    handler: logsService.saveLog
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

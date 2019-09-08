@@ -1,11 +1,14 @@
 {
   "name": "aws-challenge",
   "version": "1.0.0",
-  "description": "aws challenge application.",
+  "description": "Aws challenge application.",
   "main": "functions.js",
   "repository": "https://github.com/JhonatanRSantos/aws-challenge.git",
   "author": "Jhonatan R. Santos",
   "license": "MIT",
+  "scripts": {
+    "dev": "serverless deploy -v"
+  },
   "dependencies": {
     "aws-sdk": "^2.524.0"
   }

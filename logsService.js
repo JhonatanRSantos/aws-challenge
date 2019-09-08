@@ -1,6 +1,7 @@
 'use strict';
 const logTypes = ['log', 'warn', 'error', 'custom'];
-const { sendMessage } = require('./awsSQS');
+const { sendMessage, deleteMessage } = require('./services/awsSQS');
+const { saveData } = require('./services/awsDynamoDB');
 
 module.exports.createLogEntry = async event => {
   try {
@@ -24,3 +25,15 @@ function getReturnObject(type) {
       ? { statusCode : 200 , body: JSON.stringify({ status: true }) } 
       : { statusCode : 500, body : JSON.stringify({ status : false, message : 'error' }) };
 }
+
+module.exports.saveLog = async event => {
+  try {
+    await Promise.all(event.Records.map(async (record) => {
+      const { receiptHandle } = record;
+      await saveData(record);
+      await deleteMessage(receiptHandle);        
+    }));    
+  } catch (error) {
+    console.log(`Can not save log: ${error}`);
+  }
+};
