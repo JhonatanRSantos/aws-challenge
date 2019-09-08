@@ -1,11 +1,9 @@
 'use strict';
 const AWS = require('aws-sdk');
 const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
-const accountId = '243893291204';
-const queueName = 'aws-challenge';
-const QueueUrl =  `https://sqs.us-east-1.amazonaws.com/${accountId}/${queueName}`;
+const { SQS: {QueueUrl} } =require('../config/config.json');
 
-async function sendMessage(MessageBody) { 
+async function sendMessage (MessageBody) { 
     try {
         const parameters = { MessageBody, QueueUrl };
         await sqs.sendMessage(parameters).promise();        
@@ -13,7 +11,7 @@ async function sendMessage(MessageBody) {
         console.error(`Can not send messagge to queue: ${error}`);
     }
 }
-async function deleteMessage(ReceiptHandle) {
+async function deleteMessage (ReceiptHandle) {
     const parameters = { QueueUrl, ReceiptHandle };
     try {
         await sqs.deleteMessage(parameters).promise();

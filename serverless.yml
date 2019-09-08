@@ -32,13 +32,16 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Query
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:PutObject"
       Resource:
-        - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge"
+#        - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge"
+        - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge-new"
 #        Fn::Join:
 #          - ""
 #          - - "arn:aws:s3:::"
@@ -60,13 +63,22 @@ provider:
 
 functions:
   createLogEntry:
-    handler: logsService.createLogEntry
+    handler: src/logsService.createLogEntry
     events:
       - http:
           path: create_log_entry
           method: post
+  
   saveLog:
-    handler: logsService.saveLog
+    handler: src/logsService.saveLog
+  
+  getLogsByType:
+    handler: src/logsService.getLogsByType
+    events:
+      - http:
+          path: get_logs_by_origin
+          method: get
+  
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
