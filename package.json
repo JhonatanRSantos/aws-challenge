@@ -2,7 +2,7 @@
   "name": "aws-challenge",
   "version": "1.0.0",
   "description": "Aws challenge application.",
-  "main": "functions.js",
+  "main": "src/logsServices.js",
   "repository": "https://github.com/JhonatanRSantos/aws-challenge.git",
   "author": "Jhonatan R. Santos",
   "license": "MIT",
