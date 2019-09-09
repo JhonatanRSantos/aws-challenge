@@ -1,9 +1,13 @@
 'use strict';
-const logTypes = ['log', 'warn', 'error', 'custom'];
 const { sendMessage, deleteMessage } = require('./services/awsSQS');
 const { saveData, getData } = require('./services/awsDynamoDB');
 
+/**
+ * Write the object in an Amazon queue.
+ * @param {Object} event 
+ */
 const createLogEntry = async (event) => {
+  const logTypes = ['log', 'warn', 'error', 'custom'];
   try {
     if (event.body === null) {
       return getReturnObject(false, 'Request body cannot be empty.');
@@ -20,6 +24,11 @@ const createLogEntry = async (event) => {
   }
 };
 
+/**
+ * Generates a request response.
+ * @param {Boolean} type True to success and False to failure.
+ * @param {Object} data Will be added to answer body.
+ */
 const getReturnObject = function(type, data=undefined) {
   if (type) {
     if (!data) {
@@ -27,12 +36,13 @@ const getReturnObject = function(type, data=undefined) {
     }
     return { statusCode : 200 , body: JSON.stringify({ status: true, body: data }) };
   }
-  return { statusCode : 500, body : JSON.stringify({ status : false, message : data }) };
-  //return type
-  //    ? { statusCode : 200 , body: JSON.stringify({ status: true }) } 
-  //    : { statusCode : 500, body : JSON.stringify({ status : false, message : data }) };
+  return { statusCode : 500, body : JSON.stringify({ status : false, message : data }) }; 
 }
 
+/**
+ * Lambda function to call when a new object is inserted into the queue.
+ * @param {Object} event 
+ */
 const saveLog = async (event) => {
   try {
     await Promise.all(event.Records.map(async (record) => {
@@ -45,7 +55,11 @@ const saveLog = async (event) => {
   }
 };
 
-const getLogsByType = async (event) => {
+/**
+ * Returns all log events with a given source.
+ * @param {Object} event 
+ */
+const getLogsByOrigin = async (event) => {
   try {
     const query = event.queryStringParameters;
     if (query === null || query.origin === undefined) {
@@ -58,4 +72,4 @@ const getLogsByType = async (event) => {
   }
 };
 
-module.exports = { createLogEntry, saveLog, getLogsByType };
+module.exports = { createLogEntry, saveLog, getLogsByOrigin };

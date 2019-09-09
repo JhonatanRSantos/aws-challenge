@@ -3,6 +3,10 @@ const AWS = require('aws-sdk');
 const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
 const { SQS: {QueueUrl} } =require('../config/config.json');
 
+/**
+ * Send a message to AWS SQS Queue.
+ * @param {String} MessageBody Message to be sent.
+ */
 async function sendMessage (MessageBody) { 
     try {
         const parameters = { MessageBody, QueueUrl };
@@ -11,6 +15,10 @@ async function sendMessage (MessageBody) {
         console.error(`Can not send messagge to queue: ${error}`);
     }
 }
+/**
+ * Delete a messagem from AWS SQS Queue
+ * @param {String} ReceiptHandle 
+ */
 async function deleteMessage (ReceiptHandle) {
     const parameters = { QueueUrl, ReceiptHandle };
     try {
