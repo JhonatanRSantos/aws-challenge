@@ -21,9 +21,9 @@ async function saveData (record) {
  * Gets one or more objects in the database.
  * @param {String} origin Object origin.
  */
-async function getData(origin) {    
+async function getDataByOrigin(origin) {    
     try {
-        return await docClient.query(queryParmeters(origin)).promise();
+        return await docClient.query(queryParmeters(origin, "origin")).promise();
     } catch (error) {
         console.log(`Can not get data from database: ${error}`);
     }
@@ -31,18 +31,44 @@ async function getData(origin) {
 
 /**
  * Generate search parameters with source.
- * @param {String} origin 
+ * @param {String} toSearch 
  */
-function queryParmeters(origin) {
-    return {
-        TableName,
-        KeyConditionExpression: "#origin = :origin",
-        ExpressionAttributeNames:{
-            "#origin": "origin"
-        },
-        ExpressionAttributeValues: {
-            ":origin": `${origin}`
-        }
-    };
+function queryParmeters(toSearch, type) {
+    if (type === "origin") {
+        return {
+            TableName,
+            KeyConditionExpression: "#origin = :origin",
+            ExpressionAttributeNames:{
+                "#origin": "origin"
+            },
+            ExpressionAttributeValues: {
+                ":origin": `${toSearch}`
+            }
+        };
+    } else if (type === "type") {
+        return {
+            TableName,
+            FilterExpression: "#type = :type",
+            ExpressionAttributeNames: {
+                "#type": "type",
+            },
+            ExpressionAttributeValues: { ":type": `${toSearch}` }
+        
+        };
+    }
+    
 }
-module.exports = { saveData, getData };
+
+/**
+ * Gets one or more objects in the database.
+ * @param {String} type Type of object.
+ */
+async function getDataByType(type) {      
+    try {
+        return await docClient.scan(queryParmeters(type, "type")).promise();
+    } catch (error) {
+        console.log(`Can not get data from database: ${error.message}`);
+    }
+}
+
+module.exports = { saveData, getDataByOrigin, getDataByType };

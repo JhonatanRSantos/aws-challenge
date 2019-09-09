@@ -1,6 +1,6 @@
 'use strict';
 const { sendMessage, deleteMessage } = require('./services/awsSQS');
-const { saveData, getData } = require('./services/awsDynamoDB');
+const { saveData, getDataByOrigin, getDataByType } = require('./services/awsDynamoDB');
 
 /**
  * Write the object in an Amazon queue.
@@ -65,11 +65,23 @@ const getLogsByOrigin = async (event) => {
     if (query === null || query.origin === undefined) {
       return getReturnObject(false, 'You must send the origin.');
     }    
-    const { Items } = await getData(query.origin);  
+    const { Items } = await getDataByOrigin(query.origin);  
     return getReturnObject(true, Items);
   } catch (error) {    
     return getReturnObject(false, error.message);
   }
 };
 
-module.exports = { createLogEntry, saveLog, getLogsByOrigin };
+const getLogsByType = async (event) => {
+  try {
+    const query = event.queryStringParameters;
+    if (query === null || query.type === undefined) {
+      return getReturnObject(false, 'You must send the type.');
+    } 
+    const { Items } = await getDataByType(query.type);    
+    return getReturnObject(true, Items);
+  } catch (error) {
+    return getReturnObject(false, error.message);
+  }
+}
+module.exports = { createLogEntry, saveLog, getLogsByOrigin, getLogsByType };

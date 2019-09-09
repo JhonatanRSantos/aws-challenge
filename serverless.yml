@@ -34,6 +34,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:GetItem
         - dynamodb:Query
+        - dynamodb:Scan
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"
@@ -78,6 +79,12 @@ functions:
           path: get_logs_by_origin
           method: get
   
+  getLogsByType:
+    handler: src/logsService.getLogsByType
+    events:
+      - http:
+          path: get_logs_by_type
+          method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
