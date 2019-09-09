@@ -2,6 +2,10 @@ const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const { DynamoDB: {TableName} } = require('../config/config.json');
 
+/**
+ * Save an object to the database.
+ * @param {Object} record Object to be saved.
+ */
 async function saveData (record) {
     const { body, attributes: { SentTimestamp } } = record;
     const content = { timestamp: SentTimestamp, ...JSON.parse(body)};    
@@ -13,6 +17,10 @@ async function saveData (record) {
     }
 };
 
+/**
+ * Gets one or more objects in the database.
+ * @param {String} origin Object origin.
+ */
 async function getData(origin) {    
     try {
         return await docClient.query(queryParmeters(origin)).promise();
@@ -21,6 +29,10 @@ async function getData(origin) {
     }
 }
 
+/**
+ * Generate search parameters with source.
+ * @param {String} origin 
+ */
 function queryParmeters(origin) {
     return {
         TableName,

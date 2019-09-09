@@ -72,8 +72,8 @@ functions:
   saveLog:
     handler: src/logsService.saveLog
   
-  getLogsByType:
-    handler: src/logsService.getLogsByType
+  getLogsByOrigin:
+    handler: src/logsService.getLogsByOrigin
     events:
       - http:
           path: get_logs_by_origin
