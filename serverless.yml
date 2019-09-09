@@ -40,7 +40,6 @@ provider:
 #      Action:
 #        - "s3:PutObject"
       Resource:
-#        - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge"
         - "arn:aws:dynamodb:us-east-1:243893291204:table/aws-challenge-new"
 #        Fn::Join:
 #          - ""
