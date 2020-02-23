@@ -1,9 +1,0 @@
-{
-    "SQS": {
-        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/243893291204/aws-challenge",
-        "apiVersion": "2012-11-05"
-    },
-    "DynamoDB": {
-        "TableName": "aws-challenge-new"
-    }
-}

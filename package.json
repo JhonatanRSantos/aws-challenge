@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "serverless deploy -v"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.44",
     "aws-sdk": "^2.524.0"
   }
 }

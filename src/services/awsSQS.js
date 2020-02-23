@@ -1,11 +1,12 @@
 'use strict';
 const AWS = require('aws-sdk');
 const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
-const { SQS: {QueueUrl} } =require('../config/config.json');
+const QueueUrl = process.env.queue_url;
 
 /**
  * Send a message to AWS SQS Queue.
  * @param {String} MessageBody Message to be sent.
+ * @returns {Promise<void>}
  */
 async function sendMessage (MessageBody) { 
     try {
@@ -18,6 +19,7 @@ async function sendMessage (MessageBody) {
 /**
  * Delete a messagem from AWS SQS Queue
  * @param {String} ReceiptHandle 
+ * @returns {Promise<void>}
  */
 async function deleteMessage (ReceiptHandle) {
     const parameters = { QueueUrl, ReceiptHandle };
@@ -27,4 +29,5 @@ async function deleteMessage (ReceiptHandle) {
         console.log(`Can not delete message: ${error}`);
     }
 }
+
 module.exports = { sendMessage, deleteMessage };

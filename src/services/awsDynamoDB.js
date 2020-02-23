@@ -1,14 +1,15 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
-const { DynamoDB: {TableName} } = require('../config/config.json');
+const TableName = process.env.table_name;
 
 /**
  * Save an object to the database.
- * @param {Object} record Object to be saved.
+ * @param {AWSLambda.SQSRecord} record Object to be saved.
+ * @returns {Promise<void>}
  */
 async function saveData (record) {
     const { body, attributes: { SentTimestamp } } = record;
-    const content = { timestamp: SentTimestamp, ...JSON.parse(body)};    
+    const content = { timestamps: SentTimestamp, ...JSON.parse(body)};    
     const parameters = { TableName, Item: content };
     try {
         await docClient.put(parameters).promise();
@@ -20,10 +21,11 @@ async function saveData (record) {
 /**
  * Gets one or more objects in the database.
  * @param {String} origin Object origin.
+ * @returns {Promise<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>} Response
  */
 async function getDataByOrigin(origin) {    
     try {
-        return await docClient.query(queryParmeters(origin, "origin")).promise();
+        return await docClient.scan(queryParmeters(origin, "origin")).promise();
     } catch (error) {
         console.log(`Can not get data from database: ${error}`);
     }
@@ -32,12 +34,13 @@ async function getDataByOrigin(origin) {
 /**
  * Generate search parameters with source.
  * @param {String} toSearch 
+ * @returns {Object} Query parms
  */
-function queryParmeters(toSearch, type) {
+function queryParmeters(toSearch, fildName) {
     if (type === "origin") {
         return {
             TableName,
-            KeyConditionExpression: "#origin = :origin",
+            FilterExpression: "#origin = :origin",
             ExpressionAttributeNames:{
                 "#origin": "origin"
             },
@@ -62,6 +65,7 @@ function queryParmeters(toSearch, type) {
 /**
  * Gets one or more objects in the database.
  * @param {String} type Type of object.
+ * @returns {Promise<AWS.DynamoDB.DocumentClient.ScanInput, AWS.AWSError>} Response
  */
 async function getDataByType(type) {      
     try {
