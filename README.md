@@ -2,23 +2,82 @@
 
 To run this project you will need:
 
-    1 - AWS account
+    1 - AWS Account
     2 - Node 10.x
+    3 - Serverless
 
 Configuration:
 
-    1 - Clone or download this repo.
-    2 - Install all dependencies using npm install.
-    3 - Install serverless with npm `install serverless -g`.
-    4 - Generete your AWS credentias with IAM. Add admin permissions.
-    5 - Add your credentials locally with:
-        serverless config creentials --provider aws --key=YOUR_API_KEY --secret YOUR_SECRET
-    6 - Deploys the project with the command:
-        serverless deploy -v
-    7 - Create a Standard SQS queue.
-        Add a lambda trigger for this function: select the option `aws-challenge-dev-saveLog`.
-    8 - Creates a DynamoDB table with pk timestamps (String) and origin (String).
-    9 - Add your configurations into src/config/config.json:
-        - QueueUrl
-        - TableName
-    10 - Change iamRoleStatements resource into serverless.yml to your DynamoDB ARN.
+1 - Create an AWS account: https://aws.amazon.com/ <br>
+2 - Install Serverles and AWS CLI. https://serverless.com/ <br>
+3 - Config you AWS credentials. https://serverless.com/framework/docs/providers/aws/cli-reference/config-credentials/ <br>
+4 - Clone or download the repo. <br>
+5 - Go to your ~/path/where/you/save/aws-challenge/ and run: <br>
+```sh
+$ yarn # If you use it or;
+$ npm install # If you use it.
+```
+6 - And then to deploy the application:
+```sh
+$ STAGE=dev sls deploy
+```
+
+Testing:
+
+POST:   https://some_URL_amazonaws.com/dev/create_log_entry <br>
+Body:
+```JSON
+{
+	"origin": "front-end",
+	"type": "log",
+	"message": "message sent from frontend"
+}
+```
+Response:
+```JSON
+{
+    "status": true
+}
+```
+GET:    https://some_URL_amazonaws.com/dev/get_logs_by_origin?origin=front-end <br>
+Response:
+```JSON
+{
+    "status": true,
+    "body": [
+        {
+            "origin": "front-end",
+            "message": "message sent from frontend",
+            "timestamps": "1582430285559",
+            "type": "log"
+        },
+        {
+            "origin": "front-end",
+            "message": "message sent from frontend",
+            "timestamps": "1582430344241",
+            "type": "log"
+        }
+    ]
+}
+```
+GET:    https://some_URL_amazonaws.com/dev/get_logs_by_type?type=log <br>
+Response:
+```JSON
+{
+    "status": true,
+    "body": [
+        {
+            "origin": "front-end",
+            "message": "message sent from frontend",
+            "timestamps": "1582430285559",
+            "type": "log"
+        },
+        {
+            "origin": "front-end",
+            "message": "message sent from frontend",
+            "timestamps": "1582430344241",
+            "type": "log"
+        }
+    ]
+}
+```
