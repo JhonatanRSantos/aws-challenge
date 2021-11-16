@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.44",
-    "aws-sdk": "^2.524.0"
+    "aws-sdk": "^2.814.0"
   }
 }
